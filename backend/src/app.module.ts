@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { TenantsModule } from './tenants/tenants.module';
 import { JwtAuthGuard } from './common/guards';
+import { TenantInterceptor } from './common/interceptors';
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import { JwtAuthGuard } from './common/guards';
     }),
     PrismaModule,
     AuthModule,
+    TenantsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -22,6 +25,10 @@ import { JwtAuthGuard } from './common/guards';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TenantInterceptor,
     },
   ],
 })
