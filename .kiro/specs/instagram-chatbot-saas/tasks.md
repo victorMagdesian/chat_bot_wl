@@ -51,8 +51,14 @@
     - Verify database schema creation
     - _Requirements: 11.3_
 
-- [ ] 3. Implement authentication system
-  - [ ] 3.1 Set up JWT authentication
+- [x] 3. Implement authentication system
+
+
+
+
+  - [x] 3.1 Set up JWT authentication
+
+
     - Install @nestjs/jwt and @nestjs/passport dependencies
     - Create auth module, controller, and service
     - Implement JWT strategy with token validation
@@ -60,14 +66,18 @@
     - Implement password hashing with bcrypt
     - _Requirements: 2.1, 2.2, 2.4_
   
-  - [ ] 3.2 Implement Google OAuth integration
+  - [x] 3.2 Implement Google OAuth integration
+
+
     - Install passport-google-oauth20 dependency
     - Create Google OAuth strategy
     - Configure OAuth callback endpoint
     - Implement user creation/lookup for OAuth users
     - _Requirements: 2.3_
   
-  - [ ] 3.3 Create authentication guards and decorators
+  - [x] 3.3 Create authentication guards and decorators
+
+
     - Implement JwtAuthGuard for protected routes
     - Create CurrentUser decorator to extract user from request
     - Create Tenant decorator to extract tenant context
