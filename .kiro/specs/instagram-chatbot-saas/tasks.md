@@ -223,8 +223,14 @@
     - Store message and response in database
     - _Requirements: 5.4, 3.1_
 
-- [ ] 9. Implement chat management and real-time updates
-  - [ ] 9.1 Create chat service and endpoints
+- [x] 9. Implement chat management and real-time updates
+
+
+
+
+  - [x] 9.1 Create chat service and endpoints
+
+
     - Create chats module, controller, and service
     - Implement get chats endpoint with pagination
     - Implement get chat by ID with message history
@@ -232,7 +238,9 @@
     - Store messages with sender, content, and timestamp
     - _Requirements: 6.1, 6.3, 6.4, 6.5_
   
-  - [ ] 9.2 Implement WebSocket gateway for real-time chat
+  - [x] 9.2 Implement WebSocket gateway for real-time chat
+
+
     - Install @nestjs/websockets and socket.io dependencies
     - Create chats gateway with WebSocket handlers
     - Implement authentication for WebSocket connections
@@ -240,14 +248,22 @@
     - Filter events by tenant context
     - _Requirements: 6.2_
 
-- [ ] 10. Implement scheduled message system
-  - [ ] 10.1 Create scheduled message service and endpoints
+- [x] 10. Implement scheduled message system
+
+
+
+
+  - [x] 10.1 Create scheduled message service and endpoints
+
+
     - Create scheduled message endpoints in chats module
     - Implement create scheduled message with future datetime validation
     - Implement list scheduled messages endpoint
     - Implement cancel scheduled message endpoint
     - _Requirements: 9.1, 9.2, 9.5_
   
+
+
   - [ ] 10.2 Implement scheduled message processor
     - Create BullMQ queue for scheduled messages
     - Implement processor to send messages at scheduled time

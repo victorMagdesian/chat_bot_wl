@@ -11,6 +11,7 @@ import { TenantsModule } from './tenants/tenants.module';
 import { BotsModule } from './bots/bots.module';
 import { AutomationsModule } from './automations/automations.module';
 import { InstagramModule } from './instagram/instagram.module';
+import { ChatsModule } from './chats/chats.module';
 import { JwtAuthGuard } from './common/guards';
 import { TenantInterceptor } from './common/interceptors';
 
@@ -28,6 +29,7 @@ import { TenantInterceptor } from './common/interceptors';
     BotsModule,
     AutomationsModule,
     InstagramModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [

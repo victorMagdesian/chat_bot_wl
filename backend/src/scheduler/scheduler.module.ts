@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SchedulerService } from './scheduler.service';
 import { MessageProcessor } from './processors/message.processor';
+import { ScheduledMessageProcessor } from './processors/scheduled-message.processor';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AutomationsModule } from '../automations/automations.module';
 import { InstagramModule } from '../instagram/instagram.module';
@@ -39,7 +40,7 @@ import { RedisModule } from '../config/redis.module';
     BotsModule,
     RedisModule,
   ],
-  providers: [SchedulerService, MessageProcessor],
+  providers: [SchedulerService, MessageProcessor, ScheduledMessageProcessor],
   exports: [SchedulerService],
 })
 export class SchedulerModule {}
