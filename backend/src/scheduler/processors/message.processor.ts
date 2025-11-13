@@ -3,6 +3,8 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AutomationsService } from '../../automations/automations.service';
+import { InstagramService } from '../../instagram/instagram.service';
+import { BotsService } from '../../bots/bots.service';
 import { MessageJobData, WebhookMessageData } from '../scheduler.service';
 
 @Processor('message-processing')
@@ -12,6 +14,8 @@ export class MessageProcessor extends WorkerHost {
   constructor(
     private prisma: PrismaService,
     private automationsService: AutomationsService,
+    private instagramService: InstagramService,
+    private botsService: BotsService,
   ) {
     super();
   }
@@ -89,7 +93,7 @@ export class MessageProcessor extends WorkerHost {
       });
       this.logger.log(`Stored incoming message ${messageId}`);
 
-      // Match against automations
+      // Match message content against automation triggers
       const matchedAutomation = await this.automationsService.matchAutomation(
         bot.id,
         messageText,
@@ -97,31 +101,22 @@ export class MessageProcessor extends WorkerHost {
 
       if (matchedAutomation) {
         this.logger.log(
-          `Matched automation ${matchedAutomation.id} for message ${messageId}`,
+          `Matched automation ${matchedAutomation.id} (trigger: "${matchedAutomation.trigger}") for message ${messageId}`,
         );
 
-        // Send automated response via Instagram API
-        if (bot.accessToken) {
+        // Get decrypted access token for sending message
+        const accessToken = await this.botsService.getDecryptedAccessToken(bot.id);
+
+        if (accessToken) {
           try {
-            // Use axios directly to send message to Instagram Graph API
-            const axios = require('axios');
-            const graphApiUrl = 'https://graph.instagram.com/v18.0';
-            
-            const response = await axios.post(
-              `${graphApiUrl}/me/messages`,
-              {
-                recipient: { id: senderId },
-                message: { text: matchedAutomation.response },
-              },
-              {
-                params: { access_token: bot.accessToken },
-                timeout: 10000,
-              },
+            // Send automated response via Instagram API
+            const sentMessageId = await this.instagramService.sendMessage(
+              senderId,
+              matchedAutomation.response,
+              accessToken,
             );
 
-            const sentMessageId = response.data.message_id;
-
-            // Store bot response message
+            // Store bot response message in database
             await this.prisma.message.create({
               data: {
                 chatId: chat.id,
@@ -132,15 +127,15 @@ export class MessageProcessor extends WorkerHost {
             });
 
             this.logger.log(
-              `Sent automated response for message ${messageId}. Response ID: ${sentMessageId}`,
+              `Sent and stored automated response for message ${messageId}. Response ID: ${sentMessageId}`,
             );
           } catch (error) {
             this.logger.error(
               `Failed to send automated response for message ${messageId}:`,
-              error,
+              error instanceof Error ? error.message : String(error),
             );
             
-            // Still store the message even if sending failed
+            // Store the response message even if sending failed
             await this.prisma.message.create({
               data: {
                 chatId: chat.id,
@@ -148,13 +143,17 @@ export class MessageProcessor extends WorkerHost {
                 sender: 'bot',
               },
             });
+            
+            this.logger.log(
+              `Stored automated response locally despite send failure for message ${messageId}`,
+            );
           }
         } else {
           this.logger.warn(
-            `Bot ${bot.id} has no access token, cannot send response`,
+            `Bot ${bot.id} has no access token, cannot send response via Instagram API`,
           );
           
-          // Store the response message anyway
+          // Store the response message locally even without sending
           await this.prisma.message.create({
             data: {
               chatId: chat.id,
@@ -162,10 +161,14 @@ export class MessageProcessor extends WorkerHost {
               sender: 'bot',
             },
           });
+          
+          this.logger.log(
+            `Stored automated response locally (no access token) for message ${messageId}`,
+          );
         }
       } else {
         this.logger.log(
-          `No automation matched for message ${messageId}`,
+          `No automation matched for message "${messageText}" from ${messageId}`,
         );
       }
 
@@ -230,7 +233,7 @@ export class MessageProcessor extends WorkerHost {
       });
       this.logger.log(`Stored incoming message ${messageId}`);
 
-      // Match against automations
+      // Match message content against automation triggers
       const matchedAutomation = await this.automationsService.matchAutomation(
         botId,
         messageText,
@@ -238,25 +241,74 @@ export class MessageProcessor extends WorkerHost {
 
       if (matchedAutomation) {
         this.logger.log(
-          `Matched automation ${matchedAutomation.id} for message ${messageId}`,
+          `Matched automation ${matchedAutomation.id} (trigger: "${matchedAutomation.trigger}") for message ${messageId}`,
         );
 
-        // Store bot response message
-        // Note: Actual sending via Instagram API will be implemented in task 8
-        await this.prisma.message.create({
-          data: {
-            chatId: chat.id,
-            content: matchedAutomation.response,
-            sender: 'bot',
-          },
-        });
+        // Get decrypted access token for sending message
+        const accessToken = await this.botsService.getDecryptedAccessToken(botId);
 
-        this.logger.log(
-          `Stored automated response for message ${messageId}`,
-        );
+        if (accessToken) {
+          try {
+            // Send automated response via Instagram API
+            const sentMessageId = await this.instagramService.sendMessage(
+              instagramUserId,
+              matchedAutomation.response,
+              accessToken,
+            );
+
+            // Store bot response message in database
+            await this.prisma.message.create({
+              data: {
+                chatId: chat.id,
+                content: matchedAutomation.response,
+                sender: 'bot',
+                instagramId: sentMessageId,
+              },
+            });
+
+            this.logger.log(
+              `Sent and stored automated response for message ${messageId}. Response ID: ${sentMessageId}`,
+            );
+          } catch (error) {
+            this.logger.error(
+              `Failed to send automated response for message ${messageId}:`,
+              error instanceof Error ? error.message : String(error),
+            );
+            
+            // Store the response message even if sending failed
+            await this.prisma.message.create({
+              data: {
+                chatId: chat.id,
+                content: matchedAutomation.response,
+                sender: 'bot',
+              },
+            });
+            
+            this.logger.log(
+              `Stored automated response locally despite send failure for message ${messageId}`,
+            );
+          }
+        } else {
+          this.logger.warn(
+            `Bot ${botId} has no access token, cannot send response via Instagram API`,
+          );
+          
+          // Store the response message locally even without sending
+          await this.prisma.message.create({
+            data: {
+              chatId: chat.id,
+              content: matchedAutomation.response,
+              sender: 'bot',
+            },
+          });
+          
+          this.logger.log(
+            `Stored automated response locally (no access token) for message ${messageId}`,
+          );
+        }
       } else {
         this.logger.log(
-          `No automation matched for message ${messageId}`,
+          `No automation matched for message "${messageText}" from ${messageId}`,
         );
       }
 
