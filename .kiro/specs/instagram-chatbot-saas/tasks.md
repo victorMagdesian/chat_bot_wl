@@ -264,15 +264,26 @@
   
 
 
-  - [ ] 10.2 Implement scheduled message processor
+  - [x] 10.2 Implement scheduled message processor
+
+
+
+
+
     - Create BullMQ queue for scheduled messages
     - Implement processor to send messages at scheduled time
     - Update message status after sending
     - Handle failures and retry logic
     - _Requirements: 9.3, 9.4_
 
-- [ ] 11. Implement metrics and dashboard data
-  - [ ] 11.1 Create metrics service
+- [x] 11. Implement metrics and dashboard data
+
+
+
+
+  - [x] 11.1 Create metrics service
+
+
     - Create metrics calculation service in tenants or dashboard module
     - Implement total message count query for tenant
     - Implement active chat count query
@@ -280,7 +291,9 @@
     - Filter all metrics by tenant and date range
     - _Requirements: 10.1, 10.2_
   
-  - [ ] 11.2 Create metrics endpoint
+  - [x] 11.2 Create metrics endpoint
+
+
     - Create dashboard or metrics controller
     - Implement GET /metrics endpoint with tenant filtering
     - Return metrics in structured format
