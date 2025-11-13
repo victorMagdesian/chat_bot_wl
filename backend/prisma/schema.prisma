@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id           String   @id @default(cuid())
+  name         String
+  domain       String   @unique
+  logoUrl      String?
+  primaryColor String?  @default("#3182CE")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  users        User[]
+  bots         Bot[]
+  
+  @@index([domain])
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  password   String?
+  provider   String?  // "local" | "google"
+  providerId String?
+  tenantId   String
+  role       String   @default("user") // "admin" | "user"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@index([tenantId])
+  @@index([email])
+}
+
+model Bot {
+  id              String   @id @default(cuid())
+  name            String
+  tenantId        String
+  instagramUserId String?
+  accessToken     String?  // Encrypted
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  tenant          Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  automations     Automation[]
+  chats           Chat[]
+  
+  @@index([tenantId])
+}
+
+model Automation {
+  id        String   @id @default(cuid())
+  botId     String
+  trigger   String   // Keyword or pattern
+  response  String   // Response message
+  isActive  Boolean  @default(true)
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  
+  @@index([botId])
+}
+
+model Chat {
+  id                String   @id @default(cuid())
+  botId             String
+  instagramUserId   String
+  instagramUsername String?
+  lastMessageAt     DateTime @default(now())
+  createdAt         DateTime @default(now())
+  
+  bot               Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  messages          Message[]
+  
+  @@unique([botId, instagramUserId])
+  @@index([botId])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  chatId      String
+  content     String
+  sender      String   // "bot" | "user"
+  instagramId String?  // Instagram message ID
+  createdAt   DateTime @default(now())
+  
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  
+  @@index([chatId])
+  @@index([createdAt])
+}
+
+model ScheduledMessage {
+  id          String    @id @default(cuid())
+  botId       String
+  recipient   String    // Instagram user ID
+  content     String
+  scheduledAt DateTime
+  status      String    @default("pending") // "pending" | "sent" | "failed"
+  sentAt      DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+  
+  @@index([scheduledAt, status])
+}
