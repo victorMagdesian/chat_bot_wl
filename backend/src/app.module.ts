@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { TenantsModule } from './tenants/tenants.module';
+import { BotsModule } from './bots/bots.module';
 import { JwtAuthGuard } from './common/guards';
 import { TenantInterceptor } from './common/interceptors';
 
@@ -18,6 +19,7 @@ import { TenantInterceptor } from './common/interceptors';
     PrismaModule,
     AuthModule,
     TenantsModule,
+    BotsModule,
   ],
   controllers: [AppController],
   providers: [
