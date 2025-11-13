@@ -420,29 +420,41 @@
     - Add date range selector for filtering
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 15. Build Client Portal frontend
-  - [ ] 15.1 Set up Next.js with tenant detection
+- [x] 15. Build Client Portal frontend
+
+
+
+
+  - [x] 15.1 Set up Next.js with tenant detection
+
+
     - Configure Next.js with TypeScript
     - Create middleware.ts to extract tenant from subdomain
     - Implement tenant context using React Context API
     - Create API client with tenant header injection
     - _Requirements: 15.1, 15.2, 15.5_
   
-  - [ ] 15.2 Implement authentication and layout
+  - [x] 15.2 Implement authentication and layout
+
+
     - Create login page with email/password form
     - Implement JWT storage and refresh logic
     - Create DashboardLayout component with navigation
     - Add tenant branding loader to apply logo and colors
     - _Requirements: 2.1, 8.3, 8.4_
   
-  - [ ] 15.3 Create dashboard page
+  - [x] 15.3 Create dashboard page
+
+
     - Create dashboard page with summary cards
     - Display active chats count and recent activity
     - Show quick actions for common tasks
     - Implement responsive grid layout
     - _Requirements: 15.3_
   
-  - [ ] 15.4 Implement chat management pages
+  - [x] 15.4 Implement chat management pages
+
+
     - Create chat list page with search and filters
     - Create chat detail page with message history
     - Implement WebSocket connection for real-time updates
@@ -450,7 +462,9 @@
     - Add auto-scroll to latest message
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
   
-  - [ ] 15.5 Implement scheduled messages page
+  - [x] 15.5 Implement scheduled messages page
+
+
     - Create scheduled messages list page
     - Create schedule form with datetime picker
     - Implement recipient selection
@@ -458,7 +472,9 @@
     - Integrate with backend scheduled message endpoints
     - _Requirements: 9.1, 9.2, 9.5_
   
-  - [ ] 15.6 Implement settings page
+  - [x] 15.6 Implement settings page
+
+
     - Create settings page for tenant branding
     - Add logo upload with preview
     - Add color picker for primary color
@@ -466,7 +482,9 @@
     - Show success/error notifications
     - _Requirements: 8.1, 8.2, 8.3_
   
-  - [ ] 15.7 Handle tenant routing errors
+  - [x] 15.7 Handle tenant routing errors
+
+
     - Implement error page for invalid tenant domains
     - Add redirect logic for non-existent tenants
     - Display user-friendly error messages

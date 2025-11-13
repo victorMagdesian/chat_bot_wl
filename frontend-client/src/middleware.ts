@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host');
   const subdomain = hostname?.split('.')[0];
+  const pathname = request.nextUrl.pathname;
+
+  // Skip tenant validation for error pages and login
+  if (pathname === '/tenant-error' || pathname === '/login' || pathname === '/_error') {
+    return NextResponse.next();
+  }
 
   // Extract tenant from subdomain
   if (subdomain && subdomain !== 'www' && subdomain !== 'localhost') {
@@ -14,6 +20,11 @@ export function middleware(request: NextRequest) {
         headers: requestHeaders,
       },
     });
+  }
+
+  // If no valid subdomain and not on root or login, redirect to tenant error
+  if (pathname !== '/' && pathname !== '/login') {
+    return NextResponse.redirect(new URL('/tenant-error', request.url));
   }
 
   return NextResponse.next();
