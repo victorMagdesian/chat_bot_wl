@@ -356,8 +356,15 @@
     - Set up volume mounts for development
     - _Requirements: 13.1, 13.2_
 
-- [ ] 14. Build Admin Panel frontend
-  - [ ] 14.1 Set up authentication and routing
+- [x] 14. Build Admin Panel frontend
+
+
+
+
+
+  - [x] 14.1 Set up authentication and routing
+
+
     - Install React Router and Chakra UI dependencies
     - Create AuthContext for managing authentication state
     - Implement login page with email/password form
@@ -365,14 +372,18 @@
     - Implement API service with Axios and JWT interceptor
     - _Requirements: 2.1, 2.2_
   
-  - [ ] 14.2 Create main layout and navigation
+  - [x] 14.2 Create main layout and navigation
+
+
     - Create MainLayout component with sidebar and header
     - Implement navigation menu with links to all sections
     - Add user profile dropdown with logout
     - Implement responsive design for mobile
     - _Requirements: 13.4_
   
-  - [ ] 14.3 Implement tenant management pages
+  - [x] 14.3 Implement tenant management pages
+
+
     - Create TenantList page displaying all tenants in table
     - Create TenantForm component for create/edit
     - Implement file upload for logo with preview
@@ -380,7 +391,9 @@
     - Integrate with backend tenant endpoints
     - _Requirements: 8.1, 8.2_
   
-  - [ ] 14.4 Implement bot management pages
+  - [x] 14.4 Implement bot management pages
+
+
     - Create BotList page with tenant filtering
     - Create BotForm for creating and editing bots
     - Add Instagram credential input fields
@@ -388,7 +401,9 @@
     - Integrate with backend bot endpoints
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
   
-  - [ ] 14.5 Implement automation management pages
+
+
+  - [x] 14.5 Implement automation management pages
     - Create AutomationList page filtered by selected bot
     - Create AutomationForm with trigger and response fields
     - Add validation for empty triggers and responses
@@ -396,7 +411,8 @@
     - Integrate with backend automation endpoints
     - _Requirements: 5.1, 5.2, 5.3, 5.5_
   
-  - [ ] 14.6 Implement metrics dashboard
+  - [x] 14.6 Implement metrics dashboard
+
     - Create MetricsDashboard page
     - Fetch metrics data from backend
     - Display total messages, active chats, and response time

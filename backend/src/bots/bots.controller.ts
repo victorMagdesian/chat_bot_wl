@@ -22,8 +22,10 @@ export class BotsController {
   @Post()
   create(
     @Body() createBotDto: CreateBotDto,
-    @CurrentUser('tenantId') tenantId: string,
+    @CurrentUser('tenantId') userTenantId: string,
   ) {
+    // Use tenantId from DTO if provided (for admin), otherwise use user's tenantId
+    const tenantId = createBotDto.tenantId || userTenantId;
     return this.botsService.create(createBotDto, tenantId);
   }
 

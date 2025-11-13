@@ -9,6 +9,10 @@ export class CreateBotDto {
 
   @IsOptional()
   @IsString()
+  tenantId?: string;
+
+  @IsOptional()
+  @IsString()
   instagramUserId?: string;
 
   @IsOptional()
