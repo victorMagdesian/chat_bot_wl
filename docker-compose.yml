@@ -1,9 +1,10 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: instagram_chatbot_db
+    container_name: instagram-chatbot-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -13,26 +14,65 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    networks:
+      - chatbot-network
 
+  # Redis Cache and Queue
   redis:
     image: redis:7-alpine
-    container_name: instagram_chatbot_redis
+    container_name: instagram-chatbot-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    networks:
+      - chatbot-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: instagram-chatbot-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/instagram_chatbot?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      JWT_SECRET: "dev-jwt-secret-change-in-production"
+      JWT_EXPIRATION: "1h"
+      JWT_REFRESH_SECRET: "dev-refresh-secret-change-in-production"
+      JWT_REFRESH_EXPIRATION: "7d"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      GOOGLE_CALLBACK_URL: "http://localhost:3000/auth/google/callback"
+      INSTAGRAM_APP_ID: "${INSTAGRAM_APP_ID}"
+      INSTAGRAM_APP_SECRET: "${INSTAGRAM_APP_SECRET}"
+      INSTAGRAM_WEBHOOK_VERIFY_TOKEN: "${INSTAGRAM_WEBHOOK_VERIFY_TOKEN}"
+      ENCRYPTION_KEY: "dev-encryption-key-32-chars-min"
+      PORT: "3000"
+      NODE_ENV: "development"
+      SENTRY_DSN: "${SENTRY_DSN:-}"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - chatbot-network
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
 
 volumes:
   postgres_data:
+    driver: local
   redis_data:
+    driver: local
+
+networks:
+  chatbot-network:
+    driver: bridge
