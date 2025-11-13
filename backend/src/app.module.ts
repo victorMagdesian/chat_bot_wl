@@ -4,6 +4,8 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { RedisModule } from './config/redis.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 import { AuthModule } from './auth/auth.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { BotsModule } from './bots/bots.module';
@@ -18,6 +20,8 @@ import { TenantInterceptor } from './common/interceptors';
       envFilePath: '.env',
     }),
     PrismaModule,
+    RedisModule,
+    SchedulerModule,
     AuthModule,
     TenantsModule,
     BotsModule,
