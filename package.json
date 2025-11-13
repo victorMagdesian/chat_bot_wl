@@ -1,0 +1,23 @@
+{
+  "name": "instagram-chatbot-saas",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend-admin",
+    "frontend-client"
+  ],
+  "scripts": {
+    "dev:backend": "cd backend && npm run start:dev",
+    "dev:admin": "cd frontend-admin && npm run dev",
+    "dev:client": "cd frontend-client && npm run dev",
+    "build:all": "npm run build --workspaces",
+    "lint:all": "npm run lint --workspaces"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}

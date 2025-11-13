@@ -1,0 +1,176 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env*.local
+*.env
+!.env.example
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Backend specific
+backend/dist/
+backend/uploads/
+backend/temp/
+
+# Frontend specific
+frontend-admin/dist/
+frontend-admin/build/
+frontend-client/.next/
+frontend-client/out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output
+*.lcov
+.jest-cache/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# IDEs and Editors
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Prisma
+prisma/migrations/
+!prisma/migrations/.gitkeep
+prisma/*.db
+prisma/*.db-journal
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Redis
+dump.rdb
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+
+# ESLint
+.eslintcache
+
+# Webpack
+.webpack/
+
+# Vite
+.vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Turbo
+.turbo/
+
+# Vercel
+.vercel
+
+# Sentry
+.sentryclirc
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Certificates
+*.pem
+*.key
+*.cert
+*.crt
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Lock files (optional - uncomment if you want to ignore them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development
+.local/
+
+# Storybook
+storybook-static/
+
+# Service worker
+sw.js
+workbox-*.js
+
+# PWA
+public/sw.js
+public/workbox-*.js
+
+# Misc
+*.orig
+.history/
