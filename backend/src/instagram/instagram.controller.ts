@@ -13,6 +13,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Throttle } from '@nestjs/throttler';
 import { InstagramService } from './instagram.service';
 import { SchedulerService } from '../scheduler/scheduler.service';
 import { Public } from '../common/decorators';
@@ -31,6 +32,7 @@ export class InstagramController {
    * Webhook verification endpoint for Instagram
    */
   @Public()
+  @Throttle({ default: { ttl: 60000, limit: 10 } }) // 10 requests per minute for verification
   @Get('webhook')
   verifyWebhook(
     @Query('hub.mode') mode: string,
@@ -46,6 +48,7 @@ export class InstagramController {
    * Webhook endpoint to receive Instagram messages
    */
   @Public()
+  @Throttle({ default: { ttl: 60000, limit: 1000 } }) // 1000 requests per minute for webhook messages
   @Post('webhook')
   @HttpCode(HttpStatus.OK)
   async handleWebhook(

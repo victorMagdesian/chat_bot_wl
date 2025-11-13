@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   ConflictException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -14,6 +15,8 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
@@ -71,7 +74,7 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
+  async login(loginDto: LoginDto, ipAddress?: string): Promise<AuthResponseDto> {
     const { email, password } = loginDto;
 
     // Find user
@@ -81,6 +84,11 @@ export class AuthService {
     });
 
     if (!user || !user.password) {
+      this.logger.warn(`Failed login attempt for email: ${email}`, {
+        email,
+        ipAddress,
+        reason: 'User not found or no password set',
+      });
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -88,8 +96,20 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
+      this.logger.warn(`Failed login attempt for email: ${email}`, {
+        email,
+        ipAddress,
+        userId: user.id,
+        reason: 'Invalid password',
+      });
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    this.logger.log(`Successful login for user: ${user.id}`, {
+      userId: user.id,
+      email: user.email,
+      ipAddress,
+    });
 
     // Generate tokens
     const tokens = await this.generateTokens(user);
@@ -105,7 +125,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(refreshToken: string): Promise<AuthResponseDto> {
+  async refreshToken(refreshToken: string, ipAddress?: string): Promise<AuthResponseDto> {
     try {
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET') || 'your-refresh-secret',
@@ -117,6 +137,10 @@ export class AuthService {
       });
 
       if (!user) {
+        this.logger.warn('Failed refresh token attempt - user not found', {
+          userId: payload.sub,
+          ipAddress,
+        });
         throw new UnauthorizedException('User not found');
       }
 
@@ -132,6 +156,10 @@ export class AuthService {
         },
       };
     } catch (error) {
+      this.logger.warn('Failed refresh token attempt - invalid token', {
+        ipAddress,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       throw new UnauthorizedException('Invalid refresh token');
     }
   }

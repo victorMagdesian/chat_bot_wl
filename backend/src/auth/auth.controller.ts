@@ -31,15 +31,17 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
-    return this.authService.login(loginDto);
+  async login(@Body() loginDto: LoginDto, @Req() req): Promise<AuthResponseDto> {
+    const ipAddress = req.ip || req.connection?.remoteAddress;
+    return this.authService.login(loginDto, ipAddress);
   }
 
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
-    return this.authService.refreshToken(refreshTokenDto.refreshToken);
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto, @Req() req): Promise<AuthResponseDto> {
+    const ipAddress = req.ip || req.connection?.remoteAddress;
+    return this.authService.refreshToken(refreshTokenDto.refreshToken, ipAddress);
   }
 
   @Public()
