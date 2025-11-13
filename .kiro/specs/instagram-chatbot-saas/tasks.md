@@ -138,8 +138,14 @@
     - Store Instagram user ID and encrypted access token
     - _Requirements: 3.5, 4.4_
 
-- [ ] 6. Implement automation configuration module
-  - [ ] 6.1 Create automation service and CRUD endpoints
+- [x] 6. Implement automation configuration module
+
+
+
+
+  - [x] 6.1 Create automation service and CRUD endpoints
+
+
     - Create automations module, controller, and service
     - Implement create automation endpoint with validation
     - Implement list automations endpoint filtered by bot
@@ -147,7 +153,9 @@
     - Implement delete automation endpoint
     - _Requirements: 5.1, 5.2, 5.3, 5.5_
   
-  - [ ] 6.2 Implement automation matching engine
+  - [x] 6.2 Implement automation matching engine
+
+
     - Create service to match incoming messages against automation triggers
     - Implement keyword matching logic with case-insensitive comparison
     - Handle multiple automation matches with priority ordering
