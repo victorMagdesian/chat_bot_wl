@@ -185,15 +185,22 @@
     - Add job logging and error handling
     - _Requirements: 7.1, 7.2, 7.3, 7.5_
 
-- [ ] 8. Implement Instagram Graph API integration
-  - [ ] 8.1 Create Instagram service for API calls
+- [-] 8. Implement Instagram Graph API integration
+
+
+
+  - [x] 8.1 Create Instagram service for API calls
+
+
     - Create instagram module and service
     - Implement send message method using Graph API
     - Implement error handling for API failures
     - Add rate limiting awareness
     - _Requirements: 3.1_
   
-  - [ ] 8.2 Implement webhook endpoint
+  - [x] 8.2 Implement webhook endpoint
+
+
     - Create webhook controller with GET and POST endpoints
     - Implement webhook verification with challenge response
     - Validate webhook signatures using app secret
@@ -202,6 +209,9 @@
     - _Requirements: 3.2, 3.3, 3.4_
   
   - [ ] 8.3 Integrate automation engine with message processing
+
+
+
     - In message processor, fetch bot and automations
     - Match message content against automation triggers
     - Send automated response via Instagram API

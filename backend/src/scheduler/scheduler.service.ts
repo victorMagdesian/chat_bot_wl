@@ -11,6 +11,14 @@ export interface MessageJobData {
   timestamp: number;
 }
 
+export interface WebhookMessageData {
+  senderId: string;
+  recipientId: string;
+  messageText: string;
+  messageId: string;
+  timestamp: number;
+}
+
 export interface ScheduledMessageJobData {
   botId: string;
   recipient: string;
@@ -45,6 +53,28 @@ export class SchedulerService {
       );
     } catch (error) {
       this.logger.error('Failed to queue incoming message:', error);
+      throw error;
+    }
+  }
+
+  async queueMessageProcessing(data: WebhookMessageData): Promise<void> {
+    try {
+      // Queue the raw webhook message for processing
+      // The processor will look up the bot and transform this data
+      await this.messageQueue.add('process-webhook-message', data as any, {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+        removeOnComplete: 100,
+        removeOnFail: 50,
+      });
+      this.logger.log(
+        `Queued webhook message ${data.messageId} from ${data.senderId}`,
+      );
+    } catch (error) {
+      this.logger.error('Failed to queue webhook message:', error);
       throw error;
     }
   }
